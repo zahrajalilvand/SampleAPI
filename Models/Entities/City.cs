@@ -18,7 +18,7 @@ namespace APISample.Models.Entities
 		public string Name { get; set; }
 		public string? Description { get; set; }
 
-        public ICollection<PointOfIntrest> pointOfIntrests { get; set; } = 
+        public ICollection<PointOfIntrest> PointOfIntrest { get; set; } = 
             new List<PointOfIntrest>();
     }
 }

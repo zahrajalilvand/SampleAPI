@@ -15,7 +15,7 @@ namespace APISample
 				new CityDTO(){ Id = 1,
 							   Name = "Tehran",
 							   Description = "Capital of Iran",
-							   pointOfIntrests = new List<PointOfIntrestDTO>()
+							   pointOfIntrest = new List<PointOfIntrestDTO>()
 							   {
 									new PointOfIntrestDTO()
 									{
@@ -34,7 +34,7 @@ namespace APISample
 				, new CityDTO(){ Id = 2,
 								 Name = "Shiraz",
 								 Description = "Historical City",
-								 pointOfIntrests = new List<PointOfIntrestDTO>()
+								 pointOfIntrest = new List<PointOfIntrestDTO>()
 								 {
 									new PointOfIntrestDTO()
 									{
@@ -53,7 +53,7 @@ namespace APISample
 				, new CityDTO(){ Id = 3,
 								 Name = "Ahwaz",
 								 Description = "Oil City",
-								 pointOfIntrests= new List<PointOfIntrestDTO>() 
+								 pointOfIntrest= new List<PointOfIntrestDTO>() 
 								 {
 									new PointOfIntrestDTO()
 									{

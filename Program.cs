@@ -6,7 +6,9 @@ using APISample.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 namespace APISample
 {
@@ -31,12 +33,13 @@ namespace APISample
 			builder.Services.AddSwaggerGen();
 
 			builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+			builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            #if DEBUG
+#if DEBUG
 			builder.Services.AddTransient<IMailService, LocalMailService>();
-			#else
+#else
             builder.Services.AddTransient<IMailService, CloudMailService>();
-			#endif
+#endif
 
 			builder.Services.AddSingleton<CitiesDataStore>();
 
@@ -48,12 +51,27 @@ namespace APISample
 
 			builder.Host.UseSerilog();
 
-			builder.Services.AddDbContext<ApplicationDBContext>(option=>
+			builder.Services.AddDbContext<ApplicationDBContext>(option =>
 			{
 				option.UseSqlServer(builder.Configuration["SQLConnectionString:Default"]);
 			});
 
 			builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
+			builder.Services.AddAuthentication("Bearer")
+				.AddJwtBearer(option =>
+				{
+					option.TokenValidationParameters = new()
+					{
+						ValidateIssuer = true,
+						ValidateIssuerSigningKey = true,
+						ValidateAudience = true,
+						ValidIssuer = builder.Configuration["Authentication:Issuer"],
+						ValidAudience = builder.Configuration["Authentication:Audience"],
+						IssuerSigningKey = new SymmetricSecurityKey(
+							Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretKey"]))
+					};
+				});
 
 			var app = builder.Build();
 
@@ -67,6 +85,7 @@ namespace APISample
 
 			app.UseHttpsRedirection();
 			app.UseRouting();
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			//controller/action/id

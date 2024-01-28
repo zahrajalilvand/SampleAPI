@@ -6,13 +6,18 @@ namespace APISample.Repositories.Interfaces
 	{
 		Task<IEnumerable<City>> GetCitiesAsync();
 
-		Task<City?> GetCityByIdAsync(int cityId,
-			bool includePointOfIntrest);
+		Task<bool> CityExist(int cityId);
+
+		Task<City?> GetCityByIdAsync(int cityId, bool includePointOfIntrest);
 
 		Task<IEnumerable<PointOfIntrest>> GetPointsOfIntrestAsync(int cityId);
 
-		Task<PointOfIntrest?> GetPointOfIntrestById(
-			int CityId,
-			int PointOfIntrestId);
+		Task<PointOfIntrest?> GetPointOfIntrestByIdAsync(int CityId, int PointOfIntrestId);
+
+		Task AddPointOfInteresrAsync(int cityId, PointOfIntrest pointOfIntrest);
+
+		Task<bool> SaveChangesAsync();
+
+		void DeletePointOfInteresrAsync(PointOfIntrest pointOfIntrest);
 	}
 }

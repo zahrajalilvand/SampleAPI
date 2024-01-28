@@ -13,6 +13,27 @@ namespace APISample.Repositories
 			this.dbContext = dbContext;
 		}
 
+		public async Task AddPointOfInteresrAsync(int cityId, PointOfIntrest pointOfIntrest)
+		{
+			var city = await GetCityByIdAsync(cityId, false);
+			if (city != null)
+			{
+				city.PointOfIntrest.Add(pointOfIntrest);
+			}
+		}
+
+		public async Task<bool> CityExist(int cityId)
+		{
+			return await dbContext
+				.Cities
+				.AnyAsync(c => c.Id == cityId);
+		}
+
+		public void DeletePointOfInteresrAsync(PointOfIntrest pointOfIntrest)
+		{
+			dbContext.PointOfIntrests.Remove(pointOfIntrest);
+		}
+
 		public async Task<IEnumerable<City>> GetCitiesAsync()
 		{
 			return await dbContext
@@ -26,7 +47,7 @@ namespace APISample.Repositories
 			{
 				return await dbContext
 					.Cities
-					.Include(p => p.pointOfIntrests)
+					.Include(c => c.PointOfIntrest)
 					.Where(c => c.Id == cityId).FirstOrDefaultAsync();
 			}
 			return await dbContext
@@ -34,9 +55,9 @@ namespace APISample.Repositories
 				.Where(c => c.Id == cityId).FirstOrDefaultAsync();
 		}
 
-		public async Task<PointOfIntrest?> GetPointOfIntrestById(int CityId, int PointOfIntrestId)
+		public async Task<PointOfIntrest?> GetPointOfIntrestByIdAsync(int CityId, int PointOfIntrestId)
 		{
-			return await dbContext.PointOfIntrests.Where(c=> c.CityId == CityId && c.Id == PointOfIntrestId)
+			return await dbContext.PointOfIntrests.Where(c => c.CityId == CityId && c.Id == PointOfIntrestId)
 				.FirstOrDefaultAsync();
 		}
 
@@ -44,8 +65,13 @@ namespace APISample.Repositories
 		{
 			return await dbContext
 				.PointOfIntrests
-				.Where(p=> p.Id == cityId)
+				.Where(p => p.CityId == cityId)
 				.ToListAsync();
+		}
+
+		public async Task<bool> SaveChangesAsync()
+		{
+			return (await dbContext.SaveChangesAsync() > 0);
 		}
 	}
 }
